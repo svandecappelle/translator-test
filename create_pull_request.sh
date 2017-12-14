@@ -105,8 +105,11 @@ EOS
   fi
 fi
 
-if [[ $OWNER != $CONTRIBUTOR ]]; then
-  HEAD=$CONTRIBUTOR:$HEAD
+if [[ -z $CONTRIBUTOR ]]
+then
+  if [[ $OWNER != $CONTRIBUTOR ]]; then
+    HEAD=$CONTRIBUTOR:$HEAD
+  fi
 fi
 
 BODY=("\"head\": \"$HEAD\"", "\"base\": \"$BASE\"", "\"title\": \"$TITLE\"")
