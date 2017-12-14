@@ -25,7 +25,6 @@ OPTIONS:
    -p                  Private user token to authenticate on Github api
 EOF
 }
-git symbolic-ref --short HEAD
 HEAD=$(git symbolic-ref --short HEAD)
 BASE=master
 giturl=$(git remote -v | awk '/.*github.com.* .push.$/' | head -1)
@@ -110,7 +109,6 @@ CONTRIBUTOR=$(echo $CONTRIBUTOR | tr -d ' ')
 if [[ -n $CONTRIBUTOR ]]
 then
   if [[ $OWNER != $CONTRIBUTOR ]]; then
-    echo "CONTRIBUTOR '$CONTRIBUTOR'"
     HEAD=$CONTRIBUTOR:$HEAD
   fi
 fi
