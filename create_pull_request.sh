@@ -107,7 +107,7 @@ EOS
 fi
 
 CONTRIBUTOR=$(echo $CONTRIBUTOR | tr -d ' ')
-if [[ -z $CONTRIBUTOR ]]
+if [[ -n $CONTRIBUTOR ]]
 then
   if [[ $OWNER != $CONTRIBUTOR ]]; then
     echo "CONTRIBUTOR '$CONTRIBUTOR'"
