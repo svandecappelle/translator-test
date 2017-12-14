@@ -25,6 +25,7 @@ OPTIONS:
    -p                  Private user token to authenticate on Github api
 EOF
 }
+git symbolic-ref --short HEAD
 HEAD=$(git symbolic-ref --short HEAD)
 BASE=master
 giturl=$(git remote -v | awk '/.*github.com.* .push.$/' | head -1)
