@@ -110,7 +110,7 @@ CONTRIBUTOR=$(echo $CONTRIBUTOR | tr -d ' ')
 if [[ -z $CONTRIBUTOR ]]
 then
   if [[ $OWNER != $CONTRIBUTOR ]]; then
-    echo "CONTRIBUTOR $CONTRIBUTOR"
+    echo "CONTRIBUTOR '$CONTRIBUTOR'"
     HEAD=$CONTRIBUTOR:$HEAD
   fi
 fi
