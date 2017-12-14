@@ -106,6 +106,7 @@ EOS
   fi
 fi
 
+CONTRIBUTOR=$(echo $CONTRIBUTOR | tr -d ' ')
 if [[ -z $CONTRIBUTOR ]]
 then
   if [[ $OWNER != $CONTRIBUTOR ]]; then
