@@ -77,6 +77,20 @@ if [[ -z $ACCESS_TOKEN ]]; then
   echo "and then run this command to save token"
   echo "  git config --global auth.token YOUR_ACCESS_TOKEN"
   exit 1
+else
+  if [[ $(git remote -v) == *"$ACCESS_TOKEN"* ]]
+  then
+    echo "Using access token" 
+    OWNER_URL=$(git remote -v | cut -d'/' -f4-5 | cut -d' ' -f1 | head -1)
+    CONTRIBUTOR_URL=$(git remote -v | awk '/git@github.com.* .push.$/ { sub(/^git@github.com:/, "", $2); print $2 }' | head -1)
+
+    if [[ -z $OWNER_URL ]]; then
+        OWNER_URL=$CONTRIBUTOR_URL
+    fi
+    OWNER=$(cut -d/ -f1 <<< $OWNER_URL)
+    REPO=$(cut -d/ -f2 <<< $OWNER_URL | sed -e 's/\.git$//')
+    CONTRIBUTOR=$(cut -d/ -f1 <<< $CONTRIBUTOR_URL)
+  fi
 fi
 
 if [[ -z $TITLE ]]; then
