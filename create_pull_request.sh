@@ -104,7 +104,7 @@ if [[ $FAKE ]]; then
   echo "  $BODY"
   exit
 else
-  echo $(curl -s -H "Authorization: token $ACCESS_TOKEN" -H "Content-Type: application/json" -d "$BODY" $PR_URL)
+  echo "curl -s -H "Authorization: token $ACCESS_TOKEN" -H "Content-Type: application/json" -d "$BODY" $PR_URL"
   RESPONSE=$(curl -s -H "Authorization: token $ACCESS_TOKEN" -H "Content-Type: application/json" -d "$BODY" $PR_URL)
 fi
 
