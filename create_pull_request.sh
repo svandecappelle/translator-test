@@ -27,8 +27,15 @@ EOF
 }
 HEAD=$(git symbolic-ref --short HEAD)
 BASE=master
-OWNER_URL=$(git remote -v | awk '/.*github.com.* .push.$/ { sub(/^.*.com:/, "", $2); print $2 }' | head -1)
+giturl=$(git remote -v | awk '/.*github.com.* .push.$/' | head -1)
+if [[ $giturl == *"https"* ]]
+then 
+  OWNER_URL=$(git remote -v | awk '/https:..github.com.* .push.$/ { sub(/^https:\/\/github.com\//, "", $2); print $2 }' | head -1)
+else
+  OWNER_URL=$(git remote -v | awk '/.*github.com.* .push.$/ { sub(/^.*.com:/, "", $2); print $2 }' | head -1)
+fi 
 CONTRIBUTOR_URL=$(git remote -v | awk '/git@github.com.* .push.$/ { sub(/^git@github.com:/, "", $2); print $2 }' | head -1)
+
 if [[ -z $OWNER_URL ]]; then
   OWNER_URL=$CONTRIBUTOR_URL
 fi
