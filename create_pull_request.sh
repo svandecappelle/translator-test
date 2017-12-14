@@ -9,14 +9,6 @@ fi
 # check if access token is set
 ACCESS_TOKEN=$(git config auth.token)
 
-if [[ -z $ACCESS_TOKEN ]]; then
-  echo "Oops! Seems to be a problem with your Github API token. Use below link to generate token"
-  echo "  https://github.com/settings/tokens/new"
-  echo "and then run this command to save token"
-  echo "  git config --global auth.token YOUR_ACCESS_TOKEN"
-  exit 1
-fi
-
 usage() {
 cat << EOF
 usage: ghpr -t <title> [options]
@@ -30,6 +22,7 @@ OPTIONS:
    -d <description>    Description of the PR
    -c                  Copy the PR URL to the clipboard
    -f                  Fake run, doesn't make the request but prints the URL and body
+   -p                  Private user token to authenticate on Github api
 EOF
 }
 HEAD=$(git symbolic-ref --short HEAD)
@@ -63,11 +56,21 @@ do
       CLIPBOARD=true;;
     f)
       FAKE=true;;
+    p)
+      ACCESS_TOKEN=$OPTARG;;
     ?)
       usage
       exit;;
   esac
 done
+
+if [[ -z $ACCESS_TOKEN ]]; then
+  echo "Oops! Seems to be a problem with your Github API token. Use below link to generate token"
+  echo "  https://github.com/settings/tokens/new"
+  echo "and then run this command to save token"
+  echo "  git config --global auth.token YOUR_ACCESS_TOKEN"
+  exit 1
+fi
 
 if [[ -z $TITLE ]]; then
   COUNT=$(git log --oneline $BASE..HEAD | wc -l)
