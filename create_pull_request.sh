@@ -9,14 +9,6 @@ fi
 # check if access token is set
 ACCESS_TOKEN=$(git config auth.token)
 
-if [[ -z $ACCESS_TOKEN ]]; then
-  echo "Oops! Seems to be a problem with your Github API token. Use below link to generate token"
-  echo "  https://github.com/settings/tokens/new"
-  echo "and then run this command to save token"
-  echo "  git config --global auth.token YOUR_ACCESS_TOKEN"
-  exit 1
-fi
-
 usage() {
 cat << EOF
 usage: ghpr -t <title> [options]
@@ -30,12 +22,20 @@ OPTIONS:
    -d <description>    Description of the PR
    -c                  Copy the PR URL to the clipboard
    -f                  Fake run, doesn't make the request but prints the URL and body
+   -p                  Private user token to authenticate on Github api
 EOF
 }
 HEAD=$(git symbolic-ref --short HEAD)
 BASE=master
-OWNER_URL=$(git remote -v | awk '/https:..github.com.* .push.$/ { sub(/^https:\/\/github.com\//, "", $2); print $2 }' | head -1)
+giturl=$(git remote -v | awk '/.*github.com.* .push.$/' | head -1)
+if [[ $giturl == *"https"* ]]
+then 
+  OWNER_URL=$(git remote -v | awk '/https:..github.com.* .push.$/ { sub(/^https:\/\/github.com\//, "", $2); print $2 }' | head -1)
+else
+  OWNER_URL=$(git remote -v | awk '/.*github.com.* .push.$/ { sub(/^.*.com:/, "", $2); print $2 }' | head -1)
+fi 
 CONTRIBUTOR_URL=$(git remote -v | awk '/git@github.com.* .push.$/ { sub(/^git@github.com:/, "", $2); print $2 }' | head -1)
+
 if [[ -z $OWNER_URL ]]; then
   OWNER_URL=$CONTRIBUTOR_URL
 fi
@@ -48,7 +48,7 @@ if [[ $# -eq 0 ]]; then
   exit
 fi
 
-while getopts “h:b:t:d:cf” OPTION
+while getopts “h:b:t:d:p:cf” OPTION
 do
   case $OPTION in
     h)
@@ -63,11 +63,35 @@ do
       CLIPBOARD=true;;
     f)
       FAKE=true;;
+    p)
+      ACCESS_TOKEN=$OPTARG;;
     ?)
       usage
       exit;;
   esac
 done
+
+if [[ -z $ACCESS_TOKEN ]]; then
+  echo "Oops! Seems to be a problem with your Github API token. Use below link to generate token"
+  echo "  https://github.com/settings/tokens/new"
+  echo "and then run this command to save token"
+  echo "  git config --global auth.token YOUR_ACCESS_TOKEN"
+  exit 1
+else
+  if [[ $(git remote -v) == *"$ACCESS_TOKEN"* ]]
+  then
+    echo "Using access token" 
+    OWNER_URL=$(git remote -v | cut -d'/' -f4-5 | cut -d' ' -f1 | head -1)
+    CONTRIBUTOR_URL=$(git remote -v | awk '/git@github.com.* .push.$/ { sub(/^git@github.com:/, "", $2); print $2 }' | head -1)
+
+    if [[ -z $OWNER_URL ]]; then
+        OWNER_URL=$CONTRIBUTOR_URL
+    fi
+    OWNER=$(cut -d/ -f1 <<< $OWNER_URL)
+    REPO=$(cut -d/ -f2 <<< $OWNER_URL | sed -e 's/\.git$//')
+    CONTRIBUTOR=$(cut -d/ -f1 <<< $CONTRIBUTOR_URL)
+  fi
+fi
 
 if [[ -z $TITLE ]]; then
   COUNT=$(git log --oneline $BASE..HEAD | wc -l)
@@ -81,8 +105,12 @@ EOS
   fi
 fi
 
-if [[ $OWNER != $CONTRIBUTOR ]]; then
-  HEAD=$CONTRIBUTOR:$HEAD
+CONTRIBUTOR=$(echo $CONTRIBUTOR | tr -d ' ')
+if [[ -n $CONTRIBUTOR ]]
+then
+  if [[ $OWNER != $CONTRIBUTOR ]]; then
+    HEAD=$CONTRIBUTOR:$HEAD
+  fi
 fi
 
 BODY=("\"head\": \"$HEAD\"", "\"base\": \"$BASE\"", "\"title\": \"$TITLE\"")
@@ -101,6 +129,7 @@ if [[ $FAKE ]]; then
   echo "  $BODY"
   exit
 else
+  echo "curl -s -H "Authorization: token $ACCESS_TOKEN" -H "Content-Type: application/json" -d "$BODY" $PR_URL"
   RESPONSE=$(curl -s -H "Authorization: token $ACCESS_TOKEN" -H "Content-Type: application/json" -d "$BODY" $PR_URL)
 fi
 
