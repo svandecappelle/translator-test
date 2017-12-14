@@ -41,7 +41,7 @@ if [[ $# -eq 0 ]]; then
   exit
 fi
 
-while getopts “h:b:t:d:cf” OPTION
+while getopts “h:b:t:d:p:cf” OPTION
 do
   case $OPTION in
     h)
