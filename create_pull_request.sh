@@ -156,4 +156,4 @@ if [[ $CLIPBOARD ]]; then
   echo $URL | $CLIP_COMMAND
 fi
 
-exit RETURN
+exit $RETURN
