@@ -1,5 +1,7 @@
 #!/bin/bash
 
+RETURN=0
+
 # check if current dir is git repo
 if ! git ls-files >& /dev/null; then
   echo "Fatal: Not a git repository (or any of the parent directories): .git"
@@ -137,6 +139,10 @@ URL=$(echo $RESPONSE | grep -Eo "\"html_url\": \"(.*?\/pull\/\\d+)\"," | sed -E 
 if [[ -n $URL ]]; then
   echo $URL
 else
+  if [[ $RESPONSE == *"Validation Failed"* ]]
+  then
+    RETURN=1
+  fi
   echo $RESPONSE
 fi
 
@@ -149,3 +155,5 @@ if [[ $CLIPBOARD ]]; then
 
   echo $URL | $CLIP_COMMAND
 fi
+
+exit $RETURN
