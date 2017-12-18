@@ -1,0 +1,26 @@
+{
+  "name": "translator-test",
+  "version": "1.0.0",
+  "description": "",
+  "main": "Gruntfile.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "validate": "grunt validate"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://svandecappelle:e777e70a97a6218369067745907ad0f08986ddcf@github.com/svandecappelle/translator-test.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/svandecappelle/translator-test/issues"
+  },
+  "homepage": "https://github.com/svandecappelle/translator-test#readme",
+  "devDependencies": {
+    "grunt-xml-validator": "^1.1.3"
+  },
+  "dependencies": {
+    "grunt": "^1.0.1"
+  }
+}
