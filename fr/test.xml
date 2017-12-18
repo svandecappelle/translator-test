@@ -1,0 +1,19 @@
+<Row>
+   <Value ColumnRef="code">
+      <SimpleValue>M25</SimpleValue>
+   </Value>
+   <Value ColumnRef="name">
+      <SimpleValue>Nom</SimpleValue>
+   </Value>
+   <Value ColumnRef="description">
+      <SimpleValue>Une description très complète.</SimpleValue>
+   </Value>
+   <Value ColumnRef="level">
+      <SimpleValue>INFO</SimpleValue>
+   </Value>
+   <Value ColumnRef="symbol">
+      <SimpleValue>€</SimpleValue>
+   </Value>
+</Row>
+
+
