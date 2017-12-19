@@ -9,7 +9,7 @@
       <SimpleValue>Une description très complète.</SimpleValue>
    </Value>
    <Value ColumnRef="level">
-      <SimpleValue>INFO</SimpleValue>
+      <SimpleValue>INFORMATION</SimpleValue>
    </Value>
    <Value ColumnRef="symbol">
       <SimpleValue>€</SimpleValue>
